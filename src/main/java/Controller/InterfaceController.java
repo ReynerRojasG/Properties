@@ -1,8 +1,10 @@
 package Controller;
 
+import AppUser.App;
 import Class.Client;
 import Class.MappingSQL;
 import Class.PropertyClient;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -63,11 +65,8 @@ public class InterfaceController implements Initializable {
     private TableColumn<PropertyClient, String> directionColumn;
     @FXML
     private TableColumn<PropertyClient, String> sizeColumn;
-    private MappingSQL mappingSQL;
-    private String[] propertyType = {"Casa", "Apartamento", "Terreno"};
-    private String[] propertyStatus = {"Disponible", "Ocupado", "Vendido", "Retirado"};
-    Client selectedClient;
-    PropertyClient selectedProperty;
+    @FXML
+    private TableColumn<PropertyClient, Integer> valueColumn;
     @FXML
     private TextField newName_tf;
     @FXML
@@ -89,6 +88,13 @@ public class InterfaceController implements Initializable {
     @FXML
     private TextField newValue_tf;
     
+    private MappingSQL mappingSQL;
+    private String[] propertyType = {"Casa", "Apartamento", "Terreno"};
+    private String[] propertyStatus = {"Disponible", "Ocupado", "Vendido", "Retirado"};
+    Client selectedClient;
+    PropertyClient selectedProperty;
+    @FXML
+    private Button filter_btn;
     
     /**
      * Initializes the controller class.
@@ -111,6 +117,7 @@ public class InterfaceController implements Initializable {
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         directionColumn.setCellValueFactory(new PropertyValueFactory<>("direction"));
         sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
+        valueColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
     }
     
     private void initializeUserColumn(){
@@ -210,7 +217,8 @@ public class InterfaceController implements Initializable {
         String cedula = cedula_tf.getText();
         String direction = direction_tf.getText();
         String size = size_tf.getText();
-        // selectedClient == null || type == null || status == null || cedula.isEmpty() || direction.isEmpty() || size.isEmpty())
+        int value = Integer.parseInt(value_tf.getText());
+        
         if (selectedClient == null || type == null || status == null) {
             Platform.runLater(() -> {
                 Alert alert = new Alert(AlertType.ERROR);
@@ -221,7 +229,7 @@ public class InterfaceController implements Initializable {
             return;
         }
 
-        PropertyClient property = new PropertyClient(type, status, direction, size, selectedClient.getIdClient(), -1);
+        PropertyClient property = new PropertyClient(type, status, direction, size, selectedClient.getIdClient(), -1, value);
         
         boolean inserted = mappingSQL.insertPropertyToDB(property);
 
@@ -256,7 +264,7 @@ public class InterfaceController implements Initializable {
                 Platform.runLater(() -> {
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setHeaderText("Error al eliminar");
-                alert.setContentText("No se selecciono ningun telefono para eliminar.");
+                alert.setContentText("No se selecciono ninguna propiedad para eliminar.");
                 alert.showAndWait();
                 });
             }
@@ -304,6 +312,7 @@ public class InterfaceController implements Initializable {
             String status = newStatus_cb.getValue();
             String direction = newDirection_tf.getText();
             String size = newSize_tf.getText();
+            int valueUpdated = Integer.parseInt(newValue_tf.getText());
 
             if(!type.isEmpty() && !status.isEmpty() && !direction.isEmpty() && !size.isEmpty()){
            
@@ -311,6 +320,7 @@ public class InterfaceController implements Initializable {
                 selectedProperty.setStatus(status);
                 selectedProperty.setDirection(direction);
                 selectedProperty.setSize(size);
+                selectedProperty.setValue(valueUpdated);
                 
                 boolean updated = mappingSQL.updatePropertyFromDB(selectedProperty);
                 
@@ -318,6 +328,7 @@ public class InterfaceController implements Initializable {
                     reloadPropertyTableView(selectedClient.getIdClient());
                     newDirection_tf.clear();
                     newSize_tf.clear();
+                    newValue_tf.clear();
                     newType_cb.setValue(null);
                     newStatus_cb.setValue(null);
                 } else {
@@ -337,6 +348,11 @@ public class InterfaceController implements Initializable {
                 });
              }
         }
+    }
+
+    @FXML
+    private void filterWindow(ActionEvent event) throws IOException {
+        App.setRoot("filterWindow");
     }
     
 }

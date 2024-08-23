@@ -11,14 +11,16 @@ public class PropertyClient {
     private String size;
     private int clientPropertyId;
     private int propertyId;
+    private int value;
 
-    public PropertyClient(String type, String status, String direction, String size, int clientPropertyId, int propertyId) {
+    public PropertyClient(String type, String status, String direction, String size, int clientPropertyId, int propertyId, int value) {
         this.type = type;
         this.status = status;
         this.direction = direction;
         this.size = size;
         this.clientPropertyId = clientPropertyId;
         this.propertyId = propertyId;
+        this.value = value;
     }
 
     public void setType(String type) {
@@ -67,6 +69,14 @@ public class PropertyClient {
 
     public int getPropertyId() {
         return propertyId;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
     }
     
     

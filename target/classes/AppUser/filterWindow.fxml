@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane id="AnchorPane" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #5c493d;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.FilterWindowController">
+   <children>
+      <Button fx:id="back_btn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" text="REGRESAR" />
+      <Text fill="WHITE" layoutX="91.0" layoutY="170.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FILTRAR POR TIPO">
+         <font>
+            <Font name="Segoe UI Semibold Italic" size="18.0" />
+         </font>
+      </Text>
+      <Text fill="WHITE" layoutX="295.0" layoutY="169.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FILTRAR POR ESTADO">
+         <font>
+            <Font name="Segoe UI Semibold Italic" size="18.0" />
+         </font>
+      </Text>
+      <Text fill="WHITE" layoutX="550.0" layoutY="168.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FILTRAR POR PRECIO">
+         <font>
+            <Font name="Segoe UI Semibold Italic" size="18.0" />
+         </font>
+      </Text>
+      <ChoiceBox fx:id="filterType_cb" layoutX="91.0" layoutY="175.0" prefHeight="31.0" prefWidth="91.0" />
+      <ChoiceBox fx:id="filterStatus_cb" layoutX="295.0" layoutY="175.0" prefHeight="31.0" prefWidth="91.0" />
+      <ChoiceBox fx:id="filterPrice_cb" layoutX="550.0" layoutY="181.0" prefHeight="31.0" prefWidth="91.0" />
+      <Button fx:id="filterProperty_btn" layoutX="823.0" layoutY="160.0" mnemonicParsing="false" onAction="#makeFilter" prefHeight="43.0" prefWidth="91.0" style="-fx-background-radius: 30; -fx-background-color: #80d3bb;" text="FILTRAR">
+         <font>
+            <Font name="Segoe UI Semibold" size="12.0" />
+         </font>
+      </Button>
+      <TableView fx:id="propertyDataFilter_tv" layoutX="238.0" layoutY="380.0" prefHeight="344.0" prefWidth="624.0">
+         <columns>
+            <TableColumn fx:id="typeColumn" prefWidth="82.0" text="Tipo" />
+            <TableColumn fx:id="statusColumn" prefWidth="126.0" text="Estado" />
+            <TableColumn fx:id="sizeColumn" prefWidth="106.0" text="Tamaño" />
+            <TableColumn fx:id="directionColumn" prefWidth="163.0" text="Dirección" />
+            <TableColumn fx:id="valueColumn" prefWidth="146.0" text="Precio" />
+         </columns>
+      </TableView>
+      <Text fill="#ff8b8b" layoutX="447.0" layoutY="343.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PROPIEDADES" wrappingWidth="205.85936999320984">
+         <font>
+            <Font name="Segoe UI Black Italic" size="26.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>

@@ -82,13 +82,14 @@ public class MappingSQL {
     }
     
     public boolean insertPropertyToDB(PropertyClient property){
-        String query = "INSERT INTO property (property_type, property_status, property_direction, property_size, client_id) VALUES (?,?,?,?,?)"; 
+        String query = "INSERT INTO property (property_type, property_status, property_direction, property_size, client_id, value) VALUES (?,?,?,?,?,?)"; 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setString(1, property.getType());
             pstmt.setString(2, property.getStatus());
             pstmt.setString(3, property.getDirection());
             pstmt.setString(4, property.getSize());
             pstmt.setInt(5, property.getClientPropertyId());
+            pstmt.setInt(6, property.getValue());
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0; 
         } catch (SQLException e) {
@@ -99,7 +100,7 @@ public class MappingSQL {
     
     public List<PropertyClient> loadPropertyFromDB(int clientId) {
         List<PropertyClient> properties = new ArrayList<>();
-        String query = "SELECT property_type, property_status, property_direction, property_size, property_id FROM property WHERE client_id = ?";
+        String query = "SELECT property_type, property_status, property_direction, property_size, property_id, value FROM property WHERE client_id = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setInt(1, clientId);
@@ -110,8 +111,9 @@ public class MappingSQL {
                     String propertyDirection = rs.getString("property_direction");
                     String propertySize = rs.getString("property_size");
                     int propertyId = rs.getInt("property_id");
+                    int value = rs.getInt("value");
 
-                    PropertyClient property = new PropertyClient(propertyType, propertyStatus, propertyDirection, propertySize, clientId, propertyId);
+                    PropertyClient property = new PropertyClient(propertyType, propertyStatus, propertyDirection, propertySize, clientId, propertyId, value);
                     properties.add(property);
                 }
             }
@@ -120,6 +122,7 @@ public class MappingSQL {
         }
         return properties;
     }
+
     
     public boolean deletePropertyFromDB(int propertyId) {
         String query = "DELETE FROM property WHERE property_id = ?";
@@ -149,13 +152,14 @@ public class MappingSQL {
     }
     
     public boolean updatePropertyFromDB(PropertyClient property){
-        String query = "UPDATE property SET property_type = ?, property_status = ?, property_direction = ?, property_size = ? WHERE property_id = ?";
+        String query = "UPDATE property SET property_type = ?, property_status = ?, property_direction = ?, property_size = ?, value = ? WHERE property_id = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setString(1, property.getType());
             pstmt.setString(2, property.getStatus());
             pstmt.setString(3, property.getDirection());
             pstmt.setString(4, property.getSize());
-            pstmt.setInt(5, property.getPropertyId());
+            pstmt.setInt(5, property.getValue());
+            pstmt.setInt(6, property.getPropertyId());
             
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0; 
@@ -163,6 +167,94 @@ public class MappingSQL {
             e.printStackTrace();
         }
         return false;
+    }
+    
+    public List<PropertyClient> filterByType(String type){
+        List<PropertyClient> properties = new ArrayList<>();
+        String query = "SELECT * FROM property WHERE property_type = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, type);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    String propertyType = rs.getString("property_type");
+                    String propertyStatus = rs.getString("property_status");
+                    String propertyDirection = rs.getString("property_direction");
+                    String propertySize = rs.getString("property_size");
+                    int propertyId = rs.getInt("property_id");
+                    int value = rs.getInt("value");
+
+                    PropertyClient property = new PropertyClient(propertyType, propertyStatus, propertyDirection, propertySize, -1, propertyId, value);
+                    properties.add(property);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return properties;
+    }
+    
+    public List<PropertyClient> filterByStatus(String type){
+        List<PropertyClient> properties = new ArrayList<>();
+        String query = "SELECT * FROM property WHERE property_status = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, type);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    String propertyType = rs.getString("property_type");
+                    String propertyStatus = rs.getString("property_status");
+                    String propertyDirection = rs.getString("property_direction");
+                    String propertySize = rs.getString("property_size");
+                    int propertyId = rs.getInt("property_id");
+                    int value = rs.getInt("value");
+
+                    PropertyClient property = new PropertyClient(propertyType, propertyStatus, propertyDirection, propertySize, -1, propertyId, value);
+                    properties.add(property);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return properties;
+    }
+    
+    public List<PropertyClient> filterByPrice(String price){
+        List<PropertyClient> properties = new ArrayList<>();
+        String query = "";
+        
+        switch (price) {
+        case "<1000000":
+            query = "SELECT * FROM property WHERE value < 1000000";
+            break;
+        case "2000000-6000000":
+            query = "SELECT * FROM property WHERE value BETWEEN 2000000 AND 6000000";
+            break;
+        case "6000000-10000000":
+            query = "SELECT * FROM property WHERE value BETWEEN 6000000 AND 10000000";
+            break;
+        case ">10000000":
+            query = "SELECT * FROM property WHERE value > 10000000";
+            break;
+    }
+    
+        
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    String propertyType = rs.getString("property_type");
+                    String propertyStatus = rs.getString("property_status");
+                    String propertyDirection = rs.getString("property_direction");
+                    String propertySize = rs.getString("property_size");
+                    int propertyId = rs.getInt("property_id");
+                    int value = rs.getInt("value");
+
+                    PropertyClient property = new PropertyClient(propertyType, propertyStatus, propertyDirection, propertySize, -1, propertyId, value);
+                    properties.add(property);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return properties;
     }
 }
 
